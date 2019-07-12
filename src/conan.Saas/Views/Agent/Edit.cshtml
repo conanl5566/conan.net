@@ -1,0 +1,111 @@
+﻿@{
+    Layout = "_LayoutForm";
+    ViewData["title"] = "代理商编辑";
+}
+
+
+
+<form id="form1">
+    <input type="hidden" id="Id" name="Id" />
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 20px;">
+        <table class="form">
+            <tr>
+
+                <th class="formTitle">名称</th>
+                <td class="formValue">
+                    <input id="Name" name="Name" type="text" class="form-control required" maxlength="50" placeholder="请输入名称" />
+                </td>
+            </tr>
+
+
+            <tr>
+
+                <th class="formTitle">联系电话</th>
+                <td class="formValue">
+                    <input id="ContactNumber" name="ContactNumber" type="text" class="form-control isPhone" maxlength="50" placeholder="请输入联系电话" />
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+
+                <th class="formTitle">Key</th>
+                <td class="formValue">
+                    <input id="Key" name="Key" type="text" class="form-control" maxlength="50" placeholder="请输入Key" />
+                </td>
+            </tr>
+
+
+
+            <tr>
+
+                <th class="formTitle">Secret</th>
+                <td class="formValue">
+                    <input id="Secret" name="Secret" type="text" class="form-control" maxlength="50" placeholder="请输入Secret" />
+                </td>
+            </tr>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+
+                <th class="formTitle">状态</th>
+                <td class="formValue">
+                    <select id="State" name="State" class="form-control">
+                        @*<option value="">==请选择==</option>*@
+                        <option value="true" title="true">正常</option>
+                        <option value="false" title="false">禁用</option>
+
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    备注
+                </th>
+                <td class="formValue">
+                    <textarea id="Remarks" maxlength="200" name="Remarks" class="form-control" style="height: 100px;" placeholder="请输入备注"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+@section scripts{
+    <script type="text/javascript">
+    $(function () {
+        $("#form1").formValid()
+        initControl();
+    });
+
+    function initControl() {
+     //   $("#Target").select2({   minimumResultsForSearch: -1});
+       $("#form1").formSerialize(@Html.Raw(ViewData["Model"]));
+    }
+
+    function submitForm() {
+        if (!$("#form1").valid()) {
+            return false;
+        }
+        $.fn.submitForm({
+            url: "/agent/Edit",
+            param: $("#form1").formSerialize(),
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$('#table').bootstrapTable('refresh');
+            }
+        });
+    };
+    </script>
+}

@@ -1,0 +1,65 @@
+﻿@model conan.Domain.Entities.PaymentSetting
+@{
+    Layout = "_LayoutForm";
+}
+
+<form id="form1">
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 20px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">名称</th>
+                <td class="formValue">
+                    <input id="Title" type="text" class="form-control " readonly="readonly" value="@Model.Title" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">同步通知</th>
+                <td class="formValue">
+                    <input id="ReturnUrl" name="ReturnUrl" type="text" class="form-control "  value="@Model.ReturnUrl"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">异步通知</th>
+                <td class="formValue">
+                    <input id="NotifyUrl" name="NotifyUrl" type="text" class="form-control required" maxlength="100"  value="@Model.NotifyUrl"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle" style="height: 35px;">状态</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="rdio">
+                        <input id="Enabled_1" name="Enabled" type="radio" value="true" @(Model.Enabled?"checked":"") /><label for="Enabled_1">启用</label>
+                    </div>
+                    <div class="rdio">
+                        <input id="Enabled_2" name="Enabled" type="radio" value="false" @(!Model.Enabled?"checked":"") /><label for="Enabled_2">禁用</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#form1").formValid();
+        });
+
+        function submitForm() {
+            if (!$("#form1").valid()) {
+                return false;
+            }
+        
+            $.fn.submitForm({
+                url: "/PaymentSetting/Setting",
+                param: $("#form1").serializeArray(),
+                success: function () {
+                    $.currentIframe().$('#table').bootstrapTable('refresh');
+                    //$.currentIframe().location.reload();
+                    //top.frames[mp.attr("id")].location.reload();
+                }
+            });
+        }
+    </script>
+}

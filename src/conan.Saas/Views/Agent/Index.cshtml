@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["title"] = "代理商";
+    Layout = "_SimpleTable";
+}
+<div id="toolbar">
+    <div class="form-inline" role="form">
+        <div class="form-group">
+            <span>名称: </span>
+            <input name="Name" id="Name" class="form-control w70" type="text"  placeholder="名称" />
+        </div>
+        <div class="form-group">
+            <span>联系电话: </span>
+            <input name="ContactNumber" id="ContactNumber" class="form-control w70" type="text" placeholder="联系电话" />
+        </div>
+        <button id="btnSearch" type="submit" class="btn btn-default">搜索</button>
+    </div>
+</div>
+<table id="table"
+       data-striped="true"
+       data-toggle="table"
+       data-toolbar="#toolbar"
+       data-show-refresh="true"
+       data-show-columns="true"
+       data-show-toggle="true"
+       data-query-params="queryParams"
+       data-url="/agent/Index"
+       data-cache="false"
+       data-side-pagination="server"
+       data-pagination="true"
+       data-page-list="[ 10, 20, 50, 100]"
+       data-sort-name="id"
+        data-sort-order="desc"
+       >
+    <thead>
+        <tr >
+            <th data-field="id" data-visible="false" >Id</th>
+            <th data-field="name" data-width="15%" data-sortable="true">名称</th>
+            <th data-field="contactNumber" data-width="15%" data-sortable="true">联系电话</th>
+            <th data-field="key" data-width="15%" >Key</th>
+            <th data-field="secret" data-width="15%" >Secret</th>
+            <th data-field="state" data-width="5%" data-formatter="stateFormatter">状态</th>
+            <th data-field="remarks" data-width="20%" data-wrap="true" >备注</th>
+            <th data-formatter="optFormatter" data-width="15%">操作</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+<script>
+    var $table = $('#table');
+    $(function () {
+        $table.bootstrapTable('resetView', {
+            height: getHeight()
+        });
+        $(window).resize(function () {
+            $table.bootstrapTable('resetView', {
+                height: getHeight()
+            });
+        });
+        $('#btnSearch').click(function () {
+         $table.bootstrapTable('refresh');
+
+         //$table.bootstrapTable('mergeCells', {
+         //    index: 1,
+         //    field: 'name',
+         //    colspan: 2,
+         //    rowspan: 3
+         //});
+
+        });
+
+        $('<button class="btn btn-default" onclick="funAdd()" type="button" name="Add" title="添加"><i class="fa fa-plus "></i></button> <button class="btn btn-default" onclick="funexpert()" type="button" name="expert" title="导出"><i class="fa fa-cloud-download "></i></button>').insertAfter("button[name='refresh']");
+
+
+    
+
+    //    $table.bootstrapTable('mergeCells', { index: 0, field: 'name', colspan: 2, rowspan: 2 });
+    });
+
+  
+
+
+    function getHeight() {
+        return $(window).height() - $('.content-header').outerHeight(true)-30 ;
+    }
+    function queryParams(params) {
+        $('#toolbar').find('input[name]').each(function () {
+            params[$(this).attr('name')] = $(this).val();
+        });
+        return params;
+    }
+    function stateFormatter(value) {
+        if (value == 1) {
+            return '<span class="label label-sm label-success"> 正常 </span>';
+        }
+        return '<span class="label label-sm label-danger"> 禁用 </span>';
+    }
+    function optFormatter(value, row, index) {
+        var s = '<a class="edit" href="javascript:funstatus(\'' + row.id + '\')" title="状态">';
+        if (row.state == 1) {
+            s += '<i class="fa fa-toggle-on text-aqua"></i>';
+
+        }
+        else
+        {
+            s += '<i class="fa fa-toggle-off text-muted"></i>';
+
+        }
+        s += '</a>  ';
+
+
+        return [
+            '<a class="detail" href="javascript:funDetail(\'' + row.id + '\')" title="查看">',
+            '<i class="fa fa-search-plus"></i>',
+            '</a>  ',
+            '<span class="splite_line"></span>',
+            s,
+            '<span class="splite_line"></span>',
+            '<a class="edit" href="javascript:funEdit(\'' + row.id + '\')" title="编辑">',
+            '<i class="glyphicon glyphicon-edit"></i>',
+            '</a>  ',
+            '<span class="splite_line"></span>',
+            '<a class="remove" href="javascript:funDel(\'' + row.id + '\')" title="删除">',
+            '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>'
+        ].join('');
+    }
+    //查看
+    var funDetail = function (id) {
+        $.fn.modalOpen({
+            id: "agentDetail",
+            title: '查看',
+            url: '/agent/Details/' + id,
+            width: "700px",
+            height: "400px",
+            btn: null
+        });
+    };
+    var funexpert = function () {
+          $.ajax({
+            url: '/ExportExcel/ExportCommonOrder',
+            type: 'post',
+            data: { Name: $('#Name').val(), ContactNumber: $('#ContactNumber').val()},
+            cache: false,
+            async: false,
+            success: function (r) {
+            
+                var file = r.message;
+                if (r.isSucceeded == true) {
+                    top.layer.open({
+                        type: 2,
+                        title: '导出Excel',
+                        shade: 0.8,
+                        area: ['400px', '200px'],
+                        content: '/ExportExcel/SelectFile?File=' + r.message, //iframe的url
+                        success: function (layero, index) {
+                        },
+                        end: function () {
+                            $.ajax({
+                                url: '/ExportExcel/FileExists',
+                                type: 'post',
+                                data: { File: file },
+                                cache: false,
+                                async: false,
+                                success: function (r) {
+                                    if (r.exists == true)  //成功
+                                    {
+                                        location.href = r.file;
+                                    }
+                                    else {
+                                        top.layer.alert('导出失败', { title: "提示" });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    top.layer.alert(r.message, { title: "提示" });
+                }
+            },
+            error: function () {
+                top.layer.alert('导出失败', { title: "提示" });
+            }
+        });
+    }
+    var funAdd = function () {
+        $.fn.modalOpen({
+            id: 'agentAdd',
+            url: "/agent/create",
+            title: "添加代理商",
+            width: "700px",
+            height: "430px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    var funEdit = function (id) {
+        $.fn.modalOpen({
+            id: "agentEdit",
+            title: '编辑代理商',
+            url: '/agent/Edit?Id=' + id,
+            width: "700px",
+            height: "430px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    var funDel = function (id) {
+
+        $.fn.deleteForm({
+            prompt: "注：您确定要删除该项数据吗？",
+            url: "/agent/Delete",
+            param: {Id: id },
+            loading: "正在删除数据...",
+            success: function (iframeId) {
+                $('#table').bootstrapTable('refresh');
+            }
+        });
+    }
+    var funstatus = function (id) {
+
+        $.fn.deleteForm({
+            prompt: "注：您确定要修改该状态吗？",
+            url: "/agent/updatestatus",
+            param: { Id: id },
+            loading: "正在修改数据...",
+            success: function (iframeId) {
+                $('#table').bootstrapTable('refresh');
+            }
+        });
+    }
+
+    $(function () {
+
+        //alert(11);
+        //$table.bootstrapTable('mergeCells', {
+        //    index: 1,
+        //    field: 'name',
+        //    colspan: 2,
+        //    rowspan: 3
+        //});
+
+    });
+
+    $(function () {
+        //alert(11);
+        //$table.bootstrapTable({
+        //    rowStyle: function (row, index) {
+        //        var classes = ['success', 'info'];
+        //        if (index % 2 === 0) {//偶数行
+        //            return { classes: classes[0] };
+        //        } else {//奇数行
+        //            return { classes: classes[1] };
+        //        }
+        //    }
+        //});
+
+        //$table.Init();
+    });
+
+
+</script>
+}

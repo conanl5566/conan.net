@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    @Scripts.Render("~/bundles/jquery")
+
+    @Styles.Render("~/Content/css/bootstrap")
+    @Scripts.Render("~/Content/js/bootstrap")
+
+    @Styles.Render("~/Content/bootstrap-table/css")
+    @Scripts.Render("~/Content/bootstrap-table/js")
+
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+</body>
+</html>

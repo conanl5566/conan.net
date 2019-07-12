@@ -1,0 +1,164 @@
+﻿@{
+    Layout = "_LayoutForm";
+    ViewData["title"] = "代理商添加";
+}
+
+@section headers{
+<link href="~/js/xyj.webuploader.css" rel="stylesheet" />
+
+
+}
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 20px;">
+        <table class="form">
+
+            <tr>
+
+                <th class="formTitle">11</th>
+                <td class="formValue">
+                
+
+                
+                    <div class="form-group GiftImg">
+                        <label class="col-sm-3 control-label no-padding-right"><span class="field-item-required light-red">*</span> 分享图标: </label>
+                        <div class="col-sm-9">
+                            <div class="upbox">
+                                <div class="btn btn-white btn-info btn-bold" type="button" id="updiv0" data-imgdiv="#imgdiv0" data-field="ShareImg" style="background: #928e8e; width: 102px; height: 102px; padding: 0; border: #b2b2b2 1px solid" title="点击上传">
+                                    <div id="imgdiv0" style="width: 100%; height: 100%; text-align: center; display: table">
+                                        @*@if (Model.ShareImg != null)
+                            {
+                                <img style="width: 100%; height: 100%" src="@Model.ShareImg" />
+                            }
+                            else
+                            {*@
+                                        <span style="display: table-cell; vertical-align: middle">点击上传</span>
+                                        @*}*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div>只能上传jpg图片，大小不能大于500kb 建议尺寸 100*100</div>
+                            <div style="width: 0;height: 0;position: relative;top: -9999px">
+                                <input name="ShareImg" id="ShareImg" type="hidden" />
+                                @*@Html.TextBoxFor(o => o.ShareImg, new { @readonly = "" })*@
+                            </div>
+                            <span class="help-block">
+                                @*@Html.ValidationMessageFor(o => o.ShareImg)*@
+                            </span>
+                        </div>
+
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+               
+                <th class="formTitle">名称</th>
+                <td class="formValue">
+                    <input id="Name" name="Name" type="text" class="form-control required" maxlength="50" placeholder="请输入名称" />
+                </td>
+            </tr>
+
+
+            <tr>
+
+                <th class="formTitle">联系电话</th>
+                <td class="formValue">
+                    <input id="ContactNumber" name="ContactNumber" type="text" class="form-control isPhone" maxlength="50" placeholder="请输入联系电话" />
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+
+                <th class="formTitle">Key</th>
+                <td class="formValue">
+                    <input id="Key" name="Key" type="text" class="form-control" maxlength="50" placeholder="请输入Key" />
+                </td>
+            </tr>
+
+
+
+            <tr>
+
+                <th class="formTitle">Secret</th>
+                <td class="formValue">
+                    <input id="Secret" name="Secret" type="text" class="form-control" maxlength="50" placeholder="请输入Secret" />
+                </td>
+            </tr>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+              
+                <th class="formTitle">状态</th>
+                <td class="formValue">
+                    <select id="State" name="State" class="form-control">
+                        @*<option value="">==请选择==</option>*@
+                        <option value="true" title="true">正常</option>
+                        <option value="false" title="false">禁用</option>
+                       
+                    </select>
+                </td>
+            </tr>
+        
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    备注
+                </th>
+                <td class="formValue" >
+                    <textarea id="Remarks" maxlength="200" name="Remarks" class="form-control" style="height: 100px;"  placeholder="请输入备注" ></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+@section scripts{
+<script src="~/js/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/js/plupload-2.1.2/js/i18n/zh_CN.js"></script>
+<script src="~/js/hscp.imageupload.expand.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $("#form1").formValid()
+        initControl();
+    });
+
+    function initControl() {
+        $("#Target").select2({ minimumResultsForSearch: -1 });
+     
+    }
+
+    function submitForm() {
+        if (!$("#form1").valid()) {
+            return false;
+        }
+        $.fn.submitForm({
+            url: "/agent/Create",
+            param: $("#form1").formSerialize(),
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$('#table').bootstrapTable('refresh');
+            }
+        });
+        };
+
+
+        $(function () {
+
+         
+            $("#updiv0").imagePlupload({ savesize: "[100x100-200x100]" });
+           });
+
+    </script>
+}

@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["title"] = "系统用户";
+    Layout = "_SimpleTable";
+}
+
+<div id="toolbar">
+    <span>
+        支付接口设置：只能在接口可以时开启启用状态，不然会影响代理支付接口！
+    </span>
+</div>
+
+<table id="table"
+       data-toggle="table"
+       data-toolbar="#toolbar"
+       data-show-refresh="true"
+       data-show-toggle="true"
+       data-url="/PaymentSetting/Index"
+       data-side-pagination="server"
+       data-pagination="false"
+       >
+    <thead>
+        <tr>
+            <th data-field="id">Id</th>
+            <th data-field="title">名称</th>
+            <th data-field="paymentType">类型</th>
+            <th data-field="returnUrl">同步URL</th>
+            <th data-field="notifyUrl">异步URL</th>
+            <th data-field="enabled" data-formatter="chkFormatter">状态</th>
+            <th data-field="creatorTime">创建时间</th>
+            <th data-formatter="optFormatter" data-width="100px">操作</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+<script type="text/javascript">
+    var $table = $('#table');
+    $(function () {
+       
+    });
+
+    function chkFormatter(value, row, index) {
+        if (value == false)
+            return '<i class="fa fa-toggle-off text-muted"></i>';
+        else
+            return '<i class="fa fa-toggle-on text-aqua"></i>';
+    }
+
+    function optFormatter(value, row, index) {
+        return [
+            '<span class="btn_split"></span>',
+            '<a class="edit" href="javascript:funEdit(\'' + row.id + '\')" title="设置">',
+            '<i class="glyphicon glyphicon-edit"></i>',
+            '</a> '
+        ].join('');
+    }
+    var funEdit = function (id) {
+        $.fn.modalOpen({
+            id: "paySetting",
+            title: '支付接口设置',
+            url: '/PaymentSetting/Setting?Id=' + id,
+            width: "700px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+</script>
+}

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="App\**" />
+    <Compile Remove="IApp\**" />
+    <EmbeddedResource Remove="App\**" />
+    <EmbeddedResource Remove="IApp\**" />
+    <None Remove="App\**" />
+    <None Remove="IApp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Sys\LoginLogApp.cs" />
+    <Compile Remove="Sys\PaymentSettingApp.cs" />
+    <Compile Remove="Sys\RoleMenuApp.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="Hangfire" Version="1.7.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\dotNET.Domain.csproj" />
+    <ProjectReference Include="..\dotNET.Dto\dotNET.Dto.csproj" />
+    <ProjectReference Include="..\dotNET.EFCoreRepository\dotNET.EFCoreRepository.csproj" />
+    <ProjectReference Include="..\Utility\dotNET.Core.csproj" />
+  </ItemGroup>
+
+</Project>

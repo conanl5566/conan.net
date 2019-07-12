@@ -1,0 +1,2 @@
+1、Portable.BouncyCastle 实现 DES ，RSA  http://www.cnblogs.com/shanyou/p/6135340.html
+2、ZKWeb.System.Drawing实现验证码功能  http://www.cnblogs.com/niao/p/6057860.html
